@@ -18,7 +18,7 @@ def walkData(root_node, level, result_list):
     result_list.append(temp_list)
     unique_id += 1
     
-    children_node = root_node.getchildren()
+    children_node = list(root_node)
     if len(children_node) == 0:
         return
     for child in children_node: 
@@ -41,7 +41,7 @@ def change_en_tete(root):
         key_list.append(info[-1])
     
     return dict(zip(key_list,root.values()))
-
+"""
 def extraction_node_edge(liste):
     nouv=[]
     for k in liste:
@@ -49,7 +49,6 @@ def extraction_node_edge(liste):
             nouv.append(k)
     return nouv
   
-
 def tracage_graph(R):
     G = nx.DiGraph()
     
@@ -84,7 +83,7 @@ def tracage_graph(R):
     plt.axis("off")
     plt.show()
 
-        
+ """       
 
 if __name__ == '__main__':
     #Export xmi use case 2.xmi
@@ -92,6 +91,6 @@ if __name__ == '__main__':
     #'Activités série.xmi'
     file_name = 'Export xmi use case 2.xmi'
     R = getXmlData(file_name)
-    X = extraction_node_edge(R)
+    #X = extraction_node_edge(R)
     tracage_graph(R)
              
