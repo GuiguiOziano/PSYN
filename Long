@@ -1,0 +1,97 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Oct 15 15:33:58 2021
+
+@author: zhoul
+"""
+import networkx as nx
+import xml.etree.ElementTree as ET
+import matplotlib.pyplot as plt
+
+unique_id = 1
+
+def walkData(root_node, level, result_list):
+    global unique_id
+    new_tag = root_node.tag.split('}')[-1]
+    new_attrib = change_en_tete(root_node.attrib)
+    temp_list = [unique_id, level, new_tag, new_attrib]
+    result_list.append(temp_list)
+    unique_id += 1
+    
+    children_node = root_node.getchildren()
+    if len(children_node) == 0:
+        return
+    for child in children_node: 
+        walkData(child, level + 1, result_list)
+    return
+
+def getXmlData(file_name):
+    level = 1
+    result_list = []
+    root = ET.parse(file_name).getroot()
+#   en_tete = root.tag.split('}')[0]+'}'
+    walkData(root, level, result_list)
+    
+    return result_list
+
+def change_en_tete(root):
+    key_list=[]
+    for key in root:
+        info = key.split('}')
+        key_list.append(info[-1])
+    
+    return dict(zip(key_list,root.values()))
+
+def extraction_node_edge(liste):
+    nouv=[]
+    for k in liste:
+        if (k[2] == 'edge') or (k[2] == 'node') or (k[2] == 'packagedElement'):
+            nouv.append(k)
+    return nouv
+  
+
+def tracage_graph(R):
+    G = nx.DiGraph()
+    
+    options = {
+        "font_size": 16,
+        "node_size": 3000,
+        "node_color": "white",
+        "edgecolors": "black",
+        "linewidths": 3,
+        "width": 3,
+        }
+    
+    dic={}
+    for k in range(len(R)):
+        if R[k][2]=='node':
+            dic[R[k][3]['id']]=R[k][3]['name']
+            i=1
+                
+            while R[k+i][1] > R[k][1]:
+                dic[R[k+i][3]['id']]=R[k][3]['name']
+                i+=1
+        
+        if R[k][2]=='edge':
+            G.add_edge(dic[R[k][3]['source']], dic[R[k][3]['target']],**options)
+    
+    nx.draw_networkx(G, **options)
+    
+    # Set margins for the axes so that nodes aren't clipped
+    plt.figure()
+    ax1 = plt.gca()
+    ax1.margins(0.20)
+    plt.axis("off")
+    plt.show()
+
+        
+
+if __name__ == '__main__':
+    #Export xmi use case 2.xmi
+    #'TAMP cas test et petite bdd réf.xmi'
+    #'Activités série.xmi'
+    file_name = 'Export xmi use case 2.xmi'
+    R = getXmlData(file_name)
+    X = extraction_node_edge(R)
+    tracage_graph(R)
+             
