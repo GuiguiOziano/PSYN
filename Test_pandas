@@ -1,0 +1,22 @@
+import pandas as pd
+import numpy as np
+
+data = pd.read_csv("Base_donnees.csv", index_col="Type")
+
+
+#Premier exemple : 
+data.loc[(data["Gender"]=="Female") & (data["Education"]=="Not Graduate") & (data["Loan_Status"]=="Y"), ["Gender","Education","Loan_Status"]]
+# Permet d'obtenir toutes les ligne qui répondent aux trois critères, et à la fin on affiche les 3 catégories désirées
+
+# Créer une nouvelle fonction qui détermine si la valeur en paramètre est manquante:
+def num_missing(x):
+    return sum(x.isnull())
+    
+
+# Pour appliquer la fonction sur chaque colonne on ajouter le paramètre axis 0
+print("Valeurs manquantes par colonne:")
+print(data.apply(num_missing, axis=0)) 
+
+# Pour appliquer la fonction sur chaque ligne on ajoute le paramètre axis = 1
+print("\nValeurs manquantes par ligne:")
+print(data.apply(num_missing, axis=1))
