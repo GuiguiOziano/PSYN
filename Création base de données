@@ -1,10 +1,22 @@
     Data = pd.DataFrame(columns = ['Type','Identifiant','Nom','Structure','Allocations','Connexions'])
-    Data = Data.append({'Type': 'Activité' ,
-                         'Nom': 'Boire' ,
-                    'Identifiant':456,
-                         'Structure': 'Dormir',
-                         'Allocations': False ,
-                         },ignore_index=True)
+    for i in range(len(Donne)):
+        for j in range(len(Donne[i])):
+            if isinstance(Donne[i][j], dict):
+                _inter_data = {'Type': '',
+                             "Nom": '' ,
+                        'Identifiant':456,
+                             'Structure': 'Dormir',
+                             'Allocations': False ,
+                             }
+                for key, value in Donne[i][j].items():
+                    if key == 'id':
+                        _inter_data['Type'] = value
+                    if key == 'name':
+                        _inter_data['Structure'] = value
+                Data = Data.append(_inter_data,ignore_index=True)
+
+
+                
     entetes = ['Type','Nom','Structure','Allocations','Connexions']
     
     f = open('Base_test.csv','w')
@@ -13,5 +25,5 @@
     for i in range(0,len(Data.index)):
         valeurs = [Data.loc[Data.index[i],'Type'],Data.loc[Data.index[i],'Nom'],Data.loc[Data.index[i],'Structure'],str(Data.loc[Data.index[i],'Allocations']),str(Data.loc[Data.index[i],'Connexions'])]
         ligne = ";".join(valeurs)+"\n"
-        print(ligne)
+        #print(ligne)
         f.write(ligne)
